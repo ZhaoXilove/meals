@@ -10,7 +10,7 @@ class CategoriesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Pick your category')),
+      appBar: AppBar(title: const Text('选择你的分类')),
       body: GridView(
         padding: const EdgeInsets.all(16),
         // 设置网格的列数
