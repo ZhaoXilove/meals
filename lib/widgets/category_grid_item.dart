@@ -4,14 +4,22 @@ import 'package:meals/models/category.dart';
 // CategoryGridItem是用于显示分类的网格项
 class CategoryGridItem extends StatelessWidget {
   // 构造函数
-  const CategoryGridItem({super.key, required this.category});
+  const CategoryGridItem({
+    super.key,
+    required this.category,
+    required this.onSelect,
+  });
+
+  // 分类
   final Category category;
 
+  // 选择分类
+  final void Function() onSelect;
   // 构建方法
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => {},
+      onTap: onSelect,
       splashColor: Theme.of(context).primaryColor,
       borderRadius: BorderRadius.circular(16),
       child: Container(
