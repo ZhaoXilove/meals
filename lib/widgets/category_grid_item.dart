@@ -10,27 +10,32 @@ class CategoryGridItem extends StatelessWidget {
   // 构建方法
   @override
   Widget build(BuildContext context) {
-    return Container(
-      // EdgeInsets表示内边距，表示容器内边距为16
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        gradient: LinearGradient(
-          colors: [
-            category.color.withValues(alpha: 0.55),
-            category.color.withValues(alpha: 0.9),
-          ],
-          // 渐变方向 Alignment.topLeft 左上角，Alignment.bottomRight 右下角
-          begin: Alignment.topLeft,
-          // 渐变结束位置 Alignment.bottomRight 右下角，Alignment.topLeft 左上角
-          end: Alignment.bottomRight,
+    return InkWell(
+      onTap: () => {},
+      splashColor: Theme.of(context).primaryColor,
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        // EdgeInsets表示内边距，表示容器内边距为16
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: Colors.white,
+          gradient: LinearGradient(
+            colors: [
+              category.color.withValues(alpha: 0.55),
+              category.color.withValues(alpha: 0.9),
+            ],
+            // 渐变方向 Alignment.topLeft 左上角，Alignment.bottomRight 右下角
+            begin: Alignment.topLeft,
+            // 渐变结束位置 Alignment.bottomRight 右下角，Alignment.topLeft 左上角
+            end: Alignment.bottomRight,
+          ),
         ),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Text(
-        category.title,
-        style: Theme.of(context).textTheme.titleLarge!.copyWith(
-          color: Theme.of(context).colorScheme.onSurface,
+        child: Text(
+          category.title,
+          style: Theme.of(context).textTheme.titleLarge!.copyWith(
+            color: Theme.of(context).colorScheme.onSurface,
+          ),
         ),
       ),
     );
