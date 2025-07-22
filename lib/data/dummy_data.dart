@@ -5,16 +5,16 @@ import 'package:meals/models/meal.dart';
 
 // Constants in Dart should be written in lowerCamelcase.
 const availableCategories = [
-  Category(id: 'c1', title: 'Italian', color: Colors.purple),
-  Category(id: 'c2', title: 'Quick & Easy', color: Colors.red),
-  Category(id: 'c3', title: 'Hamburgers', color: Colors.orange),
-  Category(id: 'c4', title: 'German', color: Colors.amber),
-  Category(id: 'c5', title: 'Light & Lovely', color: Colors.blue),
-  Category(id: 'c6', title: 'Exotic', color: Colors.green),
-  Category(id: 'c7', title: 'Breakfast', color: Colors.lightBlue),
-  Category(id: 'c8', title: 'Asian', color: Colors.lightGreen),
-  Category(id: 'c9', title: 'French', color: Colors.pink),
-  Category(id: 'c10', title: 'Summer', color: Colors.teal),
+  Category(id: 'c1', title: '意大利菜', color: Colors.purple),
+  Category(id: 'c2', title: '快速简单', color: Colors.red),
+  Category(id: 'c3', title: '汉堡', color: Colors.orange),
+  Category(id: 'c4', title: '德国菜', color: Colors.amber),
+  Category(id: 'c5', title: '轻巧美味', color: Colors.blue),
+  Category(id: 'c6', title: '异国风味', color: Colors.green),
+  Category(id: 'c7', title: '早餐', color: Colors.lightBlue),
+  Category(id: 'c8', title: '亚洲菜', color: Colors.lightGreen),
+  Category(id: 'c9', title: '法国菜', color: Colors.pink),
+  Category(id: 'c10', title: '夏季', color: Colors.teal),
 ];
 
 const dummyMeals = [
