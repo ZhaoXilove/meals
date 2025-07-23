@@ -103,7 +103,50 @@ enum Affordability { affordable, pricey, luxurious }
   )
   ```
 
-#### 2.3 装饰与样式
+- **Stack**：层叠布局组件，允许子组件相互重叠
+  ```dart
+  Stack(
+    children: [
+      FadeInImage(...),  // 底层图片
+      Positioned(...),   // 定位在图片上方的文本
+    ],
+  )
+  ```
+
+- **Positioned**：在 Stack 中精确定位子组件
+  ```dart
+  Positioned(
+    bottom: 0,
+    left: 0,
+    right: 0,
+    child: Container(...),
+  )
+  ```
+
+#### 2.3 图片处理
+
+- **FadeInImage**：提供占位图和淡入效果的图片组件
+  ```dart
+  FadeInImage(
+    placeholder: MemoryImage(kTransparentImage),  // 加载时显示的透明占位图
+    image: NetworkImage(meal.imageUrl),           // 实际要加载的网络图片
+    fit: BoxFit.cover,                            // 图片填充方式
+    width: double.infinity,
+    height: 200,
+  )
+  ```
+
+- **MemoryImage**：从内存中加载图片数据
+  ```dart
+  MemoryImage(kTransparentImage)  // kTransparentImage 是 transparent_image 包提供的透明图片
+  ```
+
+- **NetworkImage**：从网络加载图片
+  ```dart
+  NetworkImage(meal.imageUrl)
+  ```
+
+#### 2.4 装饰与样式
 
 - **BoxDecoration**：用于美化 Container 的外观
 
@@ -125,6 +168,55 @@ enum Affordability { affordable, pricey, luxurious }
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   )
+  ```
+
+- **Card**：Material Design 卡片组件，提供预设的阴影、圆角和背景色
+  ```dart
+  Card(
+    margin: const EdgeInsets.all(10),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+    clipBehavior: Clip.hardEdge,
+    elevation: 2,
+    child: ...
+  )
+  ```
+
+- **clipBehavior**：控制子组件如何裁剪，特别是当子组件超出父组件边界时
+  ```dart
+  clipBehavior: Clip.hardEdge,  // 硬边裁剪，子组件超出部分被裁剪掉
+  ```
+
+- **elevation**：控制组件的阴影高度，数值越大阴影越明显，创造出组件的"浮起"效果
+  ```dart
+  elevation: 2,  // 轻微的阴影效果
+  ```
+
+#### 2.5 文本处理
+
+- **Text**：基本文本显示组件，支持丰富的样式设置
+  ```dart
+  Text(
+    meal.title,
+    maxLines: 2,                 // 最多显示2行
+    textAlign: TextAlign.center, // 文本居中对齐
+    softWrap: true,              // 允许文本换行
+    overflow: TextOverflow.ellipsis, // 文本溢出时显示省略号
+    style: const TextStyle(...),
+  )
+  ```
+
+- **TextStyle**：定义文本的样式属性
+  ```dart
+  TextStyle(
+    fontSize: 20,
+    color: Colors.white,
+    fontWeight: FontWeight.bold,
+  )
+  ```
+
+- **TextOverflow**：处理文本溢出的方式
+  ```dart
+  overflow: TextOverflow.ellipsis,  // 文本溢出时显示省略号(...)
   ```
 
 ### 3. 主题与样式
