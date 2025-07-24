@@ -97,6 +97,34 @@
     )
     ```
 
+- **SingleChildScrollView**: 可滚动的单子组件容器
+  - 使内容可在空间不足时滚动查看
+  - 适用于有限内容的滚动需求
+  - 不会按需构建子组件，所有内容一次性加载到内存
+  - 常用属性:
+    - `scrollDirection`: 滚动方向，默认垂直 (Axis.vertical)
+    - `reverse`: 是否反转滚动方向
+    - `padding`: 内边距
+    - `physics`: 控制滚动行为，如 BouncingScrollPhysics、ClampingScrollPhysics
+    - `controller`: 滚动控制器，用于控制或监听滚动
+  - 示例：
+    ```dart
+    SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          Text('标题'),
+          Image.asset('assets/image.jpg'),
+          Text('很长的描述内容...')
+        ],
+      ),
+    )
+    ```
+  - 与其他滚动组件对比:
+    - 相比 ListView：适合内容有限且结构简单的情况
+    - 相比 CustomScrollView：更简单，但灵活性较低
+    - 不适合无限内容或大量数据，此类场景应使用 ListView.builder
+
 ### 交互组件
 
 - **GestureDetector**: 检测多种手势的 widget
