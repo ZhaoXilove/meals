@@ -261,9 +261,64 @@ enum Affordability { affordable, pricey, luxurious }
   );
   ```
 
-### 5. 数据管理与处理
+- **MaterialPageRoute**：Material Design风格的页面过渡效果
+  ```dart
+  MaterialPageRoute(
+    builder: (ctx) => MealsScreen(title: category.title, meals: filteredMeals),
+  )
+  ```
 
-#### 5.1 数据过滤
+- **路由参数传递**：通过构造函数传递数据到新页面
+  ```dart
+  MealsScreen(title: category.title, meals: filteredMeals)
+  ```
+
+### 5. 组件间通信与数据传递
+
+#### 5.1 父组件向子组件传参
+
+- **通过构造函数传递数据**：最基本的数据传递方式
+  ```dart
+  // 父组件中
+  CategoryGridItem(
+    category: category,
+    onSelect: () => _selectCategory(context, category),
+  )
+  
+  // 子组件中定义接收参数
+  const CategoryGridItem({
+    super.key,
+    required this.category,
+    required this.onSelect,
+  });
+  
+  final Category category;
+  final void Function() onSelect;
+  ```
+
+#### 5.2 子组件向父组件通信
+
+- **回调函数**：父组件传递函数给子组件，子组件在特定事件发生时调用
+  ```dart
+  // 父组件定义回调函数
+  void _selectCategory(BuildContext context, Category category) {
+    // 处理逻辑
+  }
+  
+  // 传递给子组件
+  CategoryGridItem(
+    category: category,
+    onSelect: () => _selectCategory(context, category),
+  )
+  
+  // 子组件中使用
+  InkWell(
+    onTap: onSelect,  // 当点击时调用父组件传入的函数
+    // ...
+  )
+  ```
+
+#### 5.3 数据过滤与处理
 
 - **List.where()**：根据条件筛选列表数据
   ```dart
@@ -272,7 +327,9 @@ enum Affordability { affordable, pricey, luxurious }
       .toList();
   ```
 
-#### 5.2 条件渲染
+### 6. 数据管理与处理
+
+#### 6.1 条件渲染
 
 根据数据状态显示不同内容：
 
