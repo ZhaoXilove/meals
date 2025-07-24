@@ -5,10 +5,10 @@ import 'package:meals/screens/meal_details.dart';
 import 'package:meals/widgets/meal_item.dart';
 
 class MealsScreen extends StatelessWidget {
-  const MealsScreen({super.key, required this.title, required this.meals});
+  const MealsScreen({super.key, this.title, required this.meals});
 
   // 属性
-  final String title;
+  final String? title;
   final List<Meal> meals;
   void selectMeal(BuildContext context, Meal meal) {
     Navigator.of(
@@ -21,10 +21,8 @@ class MealsScreen extends StatelessWidget {
     // 食物列表
     Widget content = ListView.builder(
       itemCount: meals.length,
-      itemBuilder: (ctx, index) => MealItem(
-        meal: meals[index],
-        onSelect: (context, meal) => selectMeal(context, meal),
-      ),
+      itemBuilder: (ctx, index) =>
+          MealItem(meal: meals[index], onSelect: selectMeal),
     );
 
     // 如果 没有 食物
@@ -51,9 +49,13 @@ class MealsScreen extends StatelessWidget {
       );
     }
 
+    if (title == null) {
+      return content;
+    }
+
     // 如果 有 食物
     return Scaffold(
-      appBar: AppBar(title: Text(title)),
+      appBar: AppBar(title: Text(title!)),
       body: content,
     );
   }

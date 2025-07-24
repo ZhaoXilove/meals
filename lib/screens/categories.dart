@@ -24,35 +24,32 @@ class CategoriesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('选择你的分类')),
-      body: GridView(
-        padding: const EdgeInsets.all(16),
+    return GridView(
+      padding: const EdgeInsets.all(16),
+      // 设置网格的列数
+      // SliverGridDelegateWithFixedCrossAxisCount 是用来设置网格的列数
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         // 设置网格的列数
-        // SliverGridDelegateWithFixedCrossAxisCount 是用来设置网格的列数
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          // 设置网格的列数
-          crossAxisCount: 2,
-          // 设置网格的子元素的宽高比
-          childAspectRatio: 3 / 2,
-          // 设置网格的子元素的间距
-          crossAxisSpacing: 20,
-          // 设置网格的子元素的间距
-          mainAxisSpacing: 20,
-        ),
-        // 设置网格的子元素
-        children: [
-          // CategoryItem(title: 'Italian', color: Colors.red),
-          // CategoryItem(title: 'Italian', color: Colors.red),
-          // Text('Italian', style: TextStyle(color: Colors.white)),
-          // Text('Italian', style: TextStyle(color: Colors.white)),
-          for (final category in availableCategories)
-            CategoryGridItem(
-              category: category,
-              onSelect: () => _selectCategory(context, category),
-            ),
-        ],
+        crossAxisCount: 2,
+        // 设置网格的子元素的宽高比
+        childAspectRatio: 3 / 2,
+        // 设置网格的子元素的间距
+        crossAxisSpacing: 20,
+        // 设置网格的子元素的间距
+        mainAxisSpacing: 20,
       ),
+      // 设置网格的子元素
+      children: [
+        // CategoryItem(title: 'Italian', color: Colors.red),
+        // CategoryItem(title: 'Italian', color: Colors.red),
+        // Text('Italian', style: TextStyle(color: Colors.white)),
+        // Text('Italian', style: TextStyle(color: Colors.white)),
+        for (final category in availableCategories)
+          CategoryGridItem(
+            category: category,
+            onSelect: () => _selectCategory(context, category),
+          ),
+      ],
     );
   }
 }
