@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meals/models/meal.dart';
 import 'package:meals/screens/categories.dart';
 import 'package:meals/screens/meals.dart';
 
@@ -10,7 +11,23 @@ class TabScreen extends StatefulWidget {
 }
 
 class _TabScreenState extends State<TabScreen> {
+  // 当前选中的页面索引
   int _selectedPageIndex = 0;
+
+  // 收藏的菜品
+  final List<Meal> _favoriteMeals = [];
+
+  // 切换收藏状态
+  void _toggleMealFavoriteStatus(Meal meal) {
+    // 判断是否已经收藏
+    final isExisting = _favoriteMeals.contains(meal);
+    if (isExisting) {
+      _favoriteMeals.remove(meal);
+    } else {
+      _favoriteMeals.add(meal);
+    }
+  }
+
   void _selectPage(int index) {
     setState(() {
       _selectedPageIndex = index;
@@ -20,14 +37,19 @@ class _TabScreenState extends State<TabScreen> {
   @override
   Widget build(BuildContext context) {
     // 这个activePage 是动态的，根据 _selectedPageIndex 的值来决定显示哪个页面
-    Widget activePage = const CategoriesScreen();
+    Widget activePage = CategoriesScreen(
+      onToggleFavorite: _toggleMealFavoriteStatus,
+    );
 
     var activePageTitle = 'Categories';
 
     // 如果 _selectedPageIndex 的值为 1，则显示 FavoritesScreen
     if (_selectedPageIndex == 1) {
       // 如果 _selectedPageIndex 的值为 1，则显示 MealsScreen
-      activePage = const MealsScreen(meals: []);
+      activePage = MealsScreen(
+        meals: _favoriteMeals,
+        onToggleFavorite: _toggleMealFavoriteStatus,
+      );
       activePageTitle = 'Your Favorites';
     }
 

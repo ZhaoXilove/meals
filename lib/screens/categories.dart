@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:meals/data/dummy_data.dart';
 import 'package:meals/models/category.dart';
+import 'package:meals/models/meal.dart';
 import 'package:meals/screens/meals.dart';
 import 'package:meals/widgets/category_grid_item.dart';
 
 // 无状态组件
 class CategoriesScreen extends StatelessWidget {
   // 这是主页的分类页面
-  const CategoriesScreen({super.key});
+  const CategoriesScreen({super.key, required this.onToggleFavorite});
+
+  // 切换收藏状态
+  final void Function(Meal meal) onToggleFavorite;
 
   // 选择分类
   void _selectCategory(BuildContext context, Category category) {
@@ -16,8 +20,11 @@ class CategoriesScreen extends StatelessWidget {
         .toList();
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (ctx) =>
-            MealsScreen(title: category.title, meals: filteredMeals),
+        builder: (ctx) => MealsScreen(
+          title: category.title,
+          meals: filteredMeals,
+          onToggleFavorite: onToggleFavorite,
+        ),
       ),
     );
   }

@@ -5,15 +5,34 @@ import 'package:meals/screens/meal_details.dart';
 import 'package:meals/widgets/meal_item.dart';
 
 class MealsScreen extends StatelessWidget {
-  const MealsScreen({super.key, this.title, required this.meals});
+  const MealsScreen({
+    super.key,
+    this.title,
+    required this.meals,
+    // 切换收藏状态
+    required this.onToggleFavorite,
+  });
 
   // 属性
   final String? title;
+
+  // 食物列表
   final List<Meal> meals;
+
+  // 切换收藏状态
+  final void Function(Meal meal) onToggleFavorite;
+
   void selectMeal(BuildContext context, Meal meal) {
-    Navigator.of(
-      context,
-    ).push(MaterialPageRoute(builder: (ctx) => MealDetailsScreen(meal: meal)));
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (ctx) => MealDetailsScreen(
+          meal: meal,
+          onToggleFavorite: (isFavorite) {
+            onToggleFavorite(meal);
+          },
+        ),
+      ),
+    );
   }
 
   @override

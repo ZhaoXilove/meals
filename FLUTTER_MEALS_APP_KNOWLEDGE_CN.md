@@ -275,50 +275,76 @@ enum Affordability { affordable, pricey, luxurious }
 
 ### 5. 组件间通信与数据传递
 
-#### 5.1 父组件向子组件传参
+在 Flutter 应用中，页面（Screen）本身也是一个大的组件（Widget）。页面间的跳转和数据传递，本质上就是组件间的通信。这个美食应用主要采用了两种方式：**构造函数传参**和**回调函数**。
 
-- **通过构造函数传递数据**：最基本的数据传递方式
-  ```dart
-  // 父组件中
-  CategoryGridItem(
-    category: category,
-    onSelect: () => _selectCategory(context, category),
-  )
-  
-  // 子组件中定义接收参数
-  const CategoryGridItem({
+#### 5.1 页面跳转与顺向传参（父传子）
+
+这种方式就像单向的指令下达，上级页面把需要的信息告诉下级页面。
+
+**场景：从 `分类页` 跳转到 `美食列表页`**
+
+1.  **用户操作**：在 `CategoriesScreen`，用户点击一个美食分类（比如“意大利菜”）。
+2.  **准备数据**：`CategoriesScreen` 内部的 `_selectCategory` 函数会立刻从总的美食列表 (`dummyMeals`) 中，筛选出所有属于“意大利菜”的美食，存为一个新的列表 `filteredMeals`。
+3.  **导航并“打包”数据**：通过 `Navigator.of(context).push(...)` 跳转到 `MealsScreen`。在创建 `MealsScreen` 实例时，会像填写包裹单一样，把分类标题 (`category.title`) 和筛选出的美食列表 (`filteredMeals`) 作为构造函数的参数传递过去。
+4.  **接收数据**：`MealsScreen` 在自己的构造函数中声明需要接收 `title` 和 `meals` 这两个参数，从而拿到上级页面传来的数据并进行展示。
+
+```dart
+// 在 CategoriesScreen 中 (发送方)
+void _selectCategory(BuildContext context, Category category) {
+  final filteredMeals = dummyMeals
+      .where((meal) => meal.categories.contains(category.id))
+      .toList();
+  Navigator.of(context).push(
+    MaterialPageRoute(
+      // 创建 MealsScreen 实例，并把数据通过构造函数传进去
+      builder: (ctx) => MealsScreen(
+        title: category.title,
+        meals: filteredMeals,
+        onToggleFavorite: onToggleFavorite, // 回调函数也一并传递
+      ),
+    ),
+  );
+}
+
+// 在 MealsScreen 中 (接收方)
+class MealsScreen extends StatelessWidget {
+  const MealsScreen({
     super.key,
-    required this.category,
-    required this.onSelect,
+    this.title,
+    required this.meals,
+    required this.onToggleFavorite,
   });
-  
-  final Category category;
-  final void Function() onSelect;
-  ```
 
-#### 5.2 子组件向父组件通信
+  final String? title;
+  final List<Meal> meals;
+  // ...
+}
+```
 
-- **回调函数**：父组件传递函数给子组件，子组件在特定事件发生时调用
-  ```dart
-  // 父组件定义回调函数
-  void _selectCategory(BuildContext context, Category category) {
-    // 处理逻辑
-  }
-  
-  // 传递给子组件
-  CategoryGridItem(
-    category: category,
-    onSelect: () => _selectCategory(context, category),
-  )
-  
-  // 子组件中使用
-  InkWell(
-    onTap: onSelect,  // 当点击时调用父组件传入的函数
-    // ...
-  )
-  ```
+#### 5.2 回调函数与逆向通信（子传父）
 
-#### 5.3 数据过滤与处理
+这种方式更像是下级向上级汇报工作。子页面在某个时刻，调用父页面预先“安装”在它身上的一个函数，来通知父页面发生了某件事或请求改变状态。
+
+**场景：在任何页面点击“收藏”按钮，更新总收藏列表**
+
+1.  **状态持有者与“操作许可”**：
+    *   `TabsScreen` 是最顶层的页面，它持有最终的收藏列表 `_favoriteMeals`。
+    *   它定义了一个能修改这个列表的函数 `_toggleMealFavoriteStatus`。这个函数就是“操作许可”。
+
+2.  **“操作许可”的层层传递**：
+    *   `TabsScreen` 把 `_toggleMealFavoriteStatus` 函数传给了它直接管理的 `CategoriesScreen`。
+    *   `CategoriesScreen` 在跳转到 `MealsScreen` 时，又把这个函数接力传了下去。
+    *   `MealsScreen` 在跳转到 `MealDetailsScreen` 时，继续把这个函数传给详情页。
+
+3.  **子页面调用回调**：
+    *   当用户在 `MealDetailsScreen` 点击收藏按钮时，它并不自己处理收藏逻辑，因为它没有权限。
+    *   它会调用那个一路传递下来的 `onToggleFavorite` 函数，并把自己当前的 `meal` 对象作为参数传回去。
+
+4.  **顶层状态更新**：
+    *   调用信号最终回到了 `TabsScreen` 的 `_toggleMealFavoriteStatus` 函数。
+    *   该函数根据传入的 `meal`，更新 `_favoriteMeals` 列表，并调用 `setState` 来刷新界面，从而让所有依赖这个收藏列表的页面（比如收藏夹页面）都能显示最新的状态。
+
+**简单来说，数据是自上而下（`Tabs` -> `Categories` -> `Meals` -> `Details`）通过构造函数传递的；而状态的变更请求是自下而上（`Details` -> `Meals` -> `Categories` -> `Tabs`）通过回调函数传递的。**
 
 - **List.where()**：根据条件筛选列表数据
   ```dart
