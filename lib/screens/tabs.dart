@@ -17,14 +17,30 @@ class _TabScreenState extends State<TabScreen> {
   // 收藏的菜品
   final List<Meal> _favoriteMeals = [];
 
+  // 显示信息
+  void _showInfoMessage(String message) {
+    // 清除之前的 SnackBar
+    ScaffoldMessenger.of(context).clearSnackBars();
+    // 显示 SnackBar
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), duration: const Duration(seconds: 2)),
+    );
+  }
+
   // 切换收藏状态
   void _toggleMealFavoriteStatus(Meal meal) {
     // 判断是否已经收藏
     final isExisting = _favoriteMeals.contains(meal);
     if (isExisting) {
-      _favoriteMeals.remove(meal);
+      setState(() {
+        _favoriteMeals.remove(meal);
+      });
+      _showInfoMessage('已取消收藏');
     } else {
-      _favoriteMeals.add(meal);
+      setState(() {
+        _favoriteMeals.add(meal);
+      });
+      _showInfoMessage('已收藏');
     }
   }
 
