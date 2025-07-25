@@ -367,6 +367,112 @@ if (meals.isEmpty) {
 }
 ```
 
+#### 2.6 抽屉导航 (Drawer)
+
+抽屉导航是移动应用中常见的模式，用于收纳主要的导航链接。Flutter 提供了 `Drawer` 组件来轻松实现此功能。 `lib/widgets/main_drawer.dart` 就是一个典型的抽屉实现。
+
+-   **Drawer**: Material Design 风格的侧边栏面板，通常与 `Scaffold` 的 `drawer` 属性配合使用。
+-   **DrawerHeader**: 用于 `Drawer` 的标准头部区域，可以自定义背景、图标和文本。
+-   **ListTile**: 一个固定高度的列表项，非常适合在 `Drawer` 中显示导航选项。它包含了放置图标（`leading`）和文本（`title`）的预设位置，以及点击事件回调（`onTap`）。
+
+**代码结构示例 (基于 `main_drawer.dart`)**:
+
+```dart
+// 在 main_drawer.dart 中
+Drawer(
+  child: Column(
+    children: [
+      DrawerHeader(...),
+      ListTile(
+        leading: Icon(Icons.restaurant),
+        title: Text('Categories'),
+        onTap: () {
+          // 处理导航到分类页的逻辑
+        },
+      ),
+      ListTile(
+        leading: Icon(Icons.favorite),
+        title: Text('Favorites'),
+        onTap: () {
+          // 处理导航到收藏页的逻辑
+        },
+      ),
+    ],
+  ),
+)
+```
+
+**导航逻辑处理**:
+
+`ListTile` 的 `onTap` 回调是实现导航的关键。有两种常见的处理方式：
+
+1.  **直接导航**: 在 `onTap` 中直接调用 `Navigator`。为了用户体验，通常在跳转前先关闭抽屉。
+
+    ```dart
+    onTap: () {
+      Navigator.of(context).pop(); // 关闭抽屉
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (ctx) => CategoriesScreen(),
+      ));
+    }
+    ```
+    如果希望新页面替换当前页面而不是堆叠在上面（例如，在主导航中切换），可以使用 `pushReplacement`。
+    ```dart
+    onTap: () {
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (ctx) => TargetScreen(),
+        ));
+    }
+    ```
+
+2.  **通过回调函数**: 这种方式更加灵活和推荐（参考笔记第 5.2 节）。`Drawer` 组件接收一个函数作为参数，在 `onTap` 时调用该函数，由父组件（通常是 `Scaffold` 所在的页面）来处理实际的页面切换。
+
+    ```dart
+    // main_drawer.dart
+    class MainDrawer extends StatelessWidget {
+      const MainDrawer({super.key, required this.onSelectScreen});
+      final void Function(String identifier) onSelectScreen;
+
+      // ... build method ...
+          ListTile(
+            // ...
+            onTap: () {
+              onSelectScreen('categories');
+            },
+          ),
+          ListTile(
+            // ...
+            onTap: () {
+              onSelectScreen('favorites');
+            },
+          ),
+    // ...
+    }
+
+    // 使用 Drawer 的父组件
+    class TabsScreen extends StatefulWidget {
+      // ...
+      void _setScreen(String identifier) {
+        Navigator.of(context).pop(); // 关闭抽屉
+        if (identifier == 'favorites') {
+          // 导航到收藏页
+        } else {
+          // 默认导航到分类页
+        }
+      }
+
+      @override
+      Widget build(BuildContext context) {
+        return Scaffold(
+          appBar: AppBar(...),
+          drawer: MainDrawer(onSelectScreen: _setScreen),
+          body: ...
+        );
+      }
+    }
+    ```
+    这种方法将导航逻辑从 `Drawer` 中分离出来，使 `Drawer` 成为一个纯粹的、可复用的 UI 部件，增强了代码的模块化和可维护性。
+
 ## 最佳实践与设计模式
 
 ### 1. 组件化开发
