@@ -54,17 +54,12 @@ class _TabScreenState extends State<TabScreen> {
 
   // 设置屏幕
   void _setScreen(String identifier) {
-    // if (identifier == 'meals') {
-    //   _selectPage(0);
-    // } else if (identifier == 'filters') {
-    //   _selectPage(1);
-    // }
+    Navigator.of(context).pop();
     if (identifier == 'filters') {
+      // 跳转到 FiltersScreen
       Navigator.of(
         context,
       ).push(MaterialPageRoute(builder: (ctx) => const FiltersScreen()));
-    } else if (identifier == 'meals') {
-      Navigator.of(context).pop();
     }
   }
 
