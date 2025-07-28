@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 
 // 主抽屉
 class MainDrawer extends StatelessWidget {
-  const MainDrawer({super.key});
+  const MainDrawer({super.key, required this.onSelectScreen});
+
+  // 选择屏幕
+  final void Function(String identifier) onSelectScreen;
 
   @override
   Widget build(BuildContext context) {
@@ -48,29 +51,33 @@ class MainDrawer extends StatelessWidget {
               color: Theme.of(context).colorScheme.onSurface,
             ),
             title: Text(
-              'Categories',
+              'Meals',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
-            onTap: () {},
+            onTap: () {
+              onSelectScreen('meals');
+            },
           ),
           ListTile(
             // leading 图标
             leading: Icon(
-              Icons.favorite,
+              Icons.settings,
               size: 26,
               color: Theme.of(context).colorScheme.onSurface,
             ),
             // title 标题
             title: Text(
-              'Favorites',
+              'Filters',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
             // onTap 点击事件
-            onTap: () {},
+            onTap: () {
+              onSelectScreen('filters');
+            },
           ),
         ],
       ),

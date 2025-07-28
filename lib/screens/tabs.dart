@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:meals/models/meal.dart';
 import 'package:meals/screens/categories.dart';
+import 'package:meals/screens/filters.dart';
 import 'package:meals/screens/meals.dart';
 import 'package:meals/widgets/main_drawer.dart';
 
@@ -51,6 +52,22 @@ class _TabScreenState extends State<TabScreen> {
     });
   }
 
+  // 设置屏幕
+  void _setScreen(String identifier) {
+    // if (identifier == 'meals') {
+    //   _selectPage(0);
+    // } else if (identifier == 'filters') {
+    //   _selectPage(1);
+    // }
+    if (identifier == 'filters') {
+      Navigator.of(
+        context,
+      ).push(MaterialPageRoute(builder: (ctx) => const FiltersScreen()));
+    } else if (identifier == 'meals') {
+      Navigator.of(context).pop();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // 这个activePage 是动态的，根据 _selectedPageIndex 的值来决定显示哪个页面
@@ -72,7 +89,7 @@ class _TabScreenState extends State<TabScreen> {
 
     return Scaffold(
       appBar: AppBar(title: Text(activePageTitle)),
-      drawer: const MainDrawer(),
+      drawer: MainDrawer(onSelectScreen: _setScreen),
       body: activePage,
       // 底部导航栏
       bottomNavigationBar: BottomNavigationBar(
