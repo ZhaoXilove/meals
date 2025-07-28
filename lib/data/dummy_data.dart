@@ -139,11 +139,7 @@ const dummyMeals = [
   ),
   Meal(
     id: 'm5',
-    categories: [
-      'c2'
-          'c5',
-      'c10',
-    ],
+    categories: ['c2', 'c5', 'c10'],
     title: 'Salad with Smoked Salmon',
     affordability: Affordability.luxurious,
     complexity: Complexity.simple,
