@@ -1,5 +1,7 @@
+// Complexity 难度
 enum Complexity { simple, challenging, hard }
 
+// Affordability 价格
 enum Affordability { affordable, pricey, luxurious }
 
 class Meal {

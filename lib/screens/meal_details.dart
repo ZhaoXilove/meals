@@ -1,23 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:meals/models/meal.dart'; // 导入食物模型
+import 'package:flutter_riverpod/flutter_riverpod.dart'; // 导入 Riverpod 库
+import 'package:meals/providers/favorite_provider.dart'; // 导入 favoriteMealsProvider 和 FavoriteMealsNotifier
 
 // MealDetailsScreen是一个无状态组件，用于显示食物的详细信息
-class MealDetailsScreen extends StatelessWidget {
+// 使用 ConsumerWidget 来管理状态 替代 StatelessWidget
+class MealDetailsScreen extends ConsumerWidget {
   // 构造函数，接收必要的参数
   const MealDetailsScreen({
     super.key,
     required this.meal, // 要显示详情的食物
-    required this.onToggleFavorite, // 切换收藏状态的回调函数
+    // required this.onToggleFavorite, // 切换收藏状态的回调函数
   });
 
   // 要显示详情的食物对象
   final Meal meal;
 
   // 切换收藏状态的回调函数，参数表示是否收藏
-  final void Function(bool isFavorite) onToggleFavorite;
+  // final void Function(bool isFavorite) onToggleFavorite;
+
+  //  显示信息提示的方法，使用SnackBar
+  void _showInfoMessage(BuildContext context, String message) {
+    // 清除之前的SnackBar
+    ScaffoldMessenger.of(context).clearSnackBars();
+    // 显示新的SnackBar
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
+  }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // 获取 favoriteMealsProvider 的值, 这里使用read不使用watch是 因为 这里不需要监听 收藏列表的变化，只是触发收藏状态的改变
+    // final favoriteMeals = ref.read(favoriteMealsProvider);
+
     // 返回一个脚手架，包含标题栏和主体内容
     return Scaffold(
       appBar: AppBar(
@@ -27,7 +43,17 @@ class MealDetailsScreen extends StatelessWidget {
           IconButton(
             onPressed: () {
               // 点击时调用切换收藏状态的回调函数
-              onToggleFavorite(meal.id == meal.id);
+              //  onToggleFavorite(meal.id == meal.id);
+              // 切换收藏状态
+              // 现在使用 ref.read(favoriteMealsProvider.notifier) 来获取 favoriteMealsProvider 的值
+              // 返回值是Bool 是否添加成功
+              final wasAdded = ref
+                  .read(favoriteMealsProvider.notifier)
+                  .toggleMealFavoriteStatus(meal);
+              _showInfoMessage(
+                context,
+                wasAdded ? '食物已添加至收藏夹.' : '食物已从收藏夹中移除.',
+              );
             },
             icon: const Icon(Icons.star), // 使用星形图标表示收藏
           ),

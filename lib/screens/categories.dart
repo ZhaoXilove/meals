@@ -10,12 +10,12 @@ class CategoriesScreen extends StatelessWidget {
   // 构造函数，接收必要的参数
   const CategoriesScreen({
     super.key,
-    required this.onToggleFavorite, // 切换收藏状态的回调函数
+    // required this.onToggleFavorite, // 切换收藏状态的回调函数
     required this.availableMeals, // 可用的食物列表（已应用过滤器后的）
   });
 
   // 切换收藏状态的回调函数，当用户点击收藏按钮时调用
-  final void Function(Meal meal) onToggleFavorite;
+  // final void Function(Meal meal) onToggleFavorite;
 
   // 可用的食物列表，这是经过过滤器筛选后的食物
   final List<Meal> availableMeals;
@@ -33,7 +33,7 @@ class CategoriesScreen extends StatelessWidget {
         builder: (ctx) => MealsScreen(
           title: category.title, // 设置页面标题为分类名称
           meals: filteredMeals, // 传递筛选后的食物列表
-          onToggleFavorite: onToggleFavorite, // 传递切换收藏状态的回调函数
+          // onToggleFavorite: onToggleFavorite, // 传递切换收藏状态的回调函数
         ),
       ),
     );

@@ -7,6 +7,7 @@ import 'package:meals/screens/filters.dart'; // 导入过滤器页面
 import 'package:meals/screens/meals.dart'; // 导入食物列表页面
 import 'package:meals/widgets/main_drawer.dart'; // 导入主抽屉菜单组件
 import 'package:meals/providers/meals_provider.dart'; // 导入 mealsProvider
+import 'package:meals/providers/favorite_provider.dart'; // 导入 favoriteMealsProvider 和 FavoriteMealsNotifier
 
 // 定义初始过滤器设置，所有过滤器默认为关闭状态
 const kInitialFilters = {
@@ -33,23 +34,24 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
   // 当前选中的页面索引，0表示分类页面，1表示收藏页面
   int _selectedPageIndex = 0;
 
-  // 收藏的食物列表，初始为空
-  final List<Meal> _favoriteMeals = [];
+  // 收藏的食物列表，初始为空， 目前不需要它了， 使用 favoriteMealsProvider 的值
+  // final List<Meal> _favoriteMeals = [];
 
   // 当前选中的过滤器设置，初始使用kInitialFilters
   Map<Filter, bool> _selectedFilters = kInitialFilters;
 
-  // 显示信息提示的方法，使用SnackBar
-  void _showInfoMessage(String message) {
-    // 清除之前的SnackBar
-    ScaffoldMessenger.of(context).clearSnackBars();
-    // 显示新的SnackBar
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
-  }
+  //  显示信息提示的方法，使用SnackBar
+  // void _showInfoMessage(String message) {
+  //   // 清除之前的SnackBar
+  //   ScaffoldMessenger.of(context).clearSnackBars();
+  //   // 显示新的SnackBar
+  //   ScaffoldMessenger.of(
+  //     context,
+  //   ).showSnackBar(SnackBar(content: Text(message)));
+  // }
 
   // 切换食物收藏状态的方法
+  /*
   void _toggleMealFavoriteStatus(Meal meal) {
     // 检查食物是否已经在收藏列表中
     final isExisting = _favoriteMeals.contains(meal);
@@ -68,6 +70,7 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
       });
     }
   }
+  */
 
   // 选择底部导航栏页面的方法
   void _selectPage(int index) {
@@ -126,16 +129,23 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
 
     // 根据当前选中的页面索引决定显示哪个页面
     Widget activePage = CategoriesScreen(
-      onToggleFavorite: _toggleMealFavoriteStatus, // 传递切换收藏状态的回调
+      // 现在不需要再重写 onToggleFavorite 了， 使用 favoriteMealsProvider 的值
+      // onToggleFavorite: _toggleMealFavoriteStatus, // 传递切换收藏状态的回调
       availableMeals: availableMeals, // 传递经过过滤的食物列表
     );
     var activePageTitle = 'Categories'; // 默认页面标题为"分类"
 
+    // 如果选中的是收藏页面
     if (_selectedPageIndex == 1) {
-      // 如果选中的是收藏页面
+      // 获取 favoriteMealsProvider 的值
+      final favoriteMeals = ref.watch(favoriteMealsProvider);
+
+      // 如果选中的是收藏页面 ， 使用 MealsScreen 组件
       activePage = MealsScreen(
-        meals: _favoriteMeals, // 传递收藏的食物列表
-        onToggleFavorite: _toggleMealFavoriteStatus, // 传递切换收藏状态的回调
+        // 不使用之前的 _favoriteMeals ， 使用 favoriteMealsProvider 的值
+        meals: favoriteMeals, // 传递收藏的食物列表
+        // 现在不需要再重写 onToggleFavorite 了， 使用 favoriteMealsProvider 的值
+        // onToggleFavorite: _toggleMealFavoriteStatus, // 传递切换收藏状态的回调
       );
       activePageTitle = 'Your Favorites'; // 页面标题为"你的收藏"
     }

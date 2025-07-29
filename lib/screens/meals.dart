@@ -12,7 +12,7 @@ class MealsScreen extends StatelessWidget {
     this.title, // 页面标题，可选参数
     required this.meals, // 要显示的食物列表
     // 切换收藏状态的回调函数
-    required this.onToggleFavorite,
+    // required this.onToggleFavorite,
   });
 
   // 页面标题，可以为null（当作为标签页的内容时不需要标题）
@@ -22,7 +22,7 @@ class MealsScreen extends StatelessWidget {
   final List<Meal> meals;
 
   // 切换收藏状态的回调函数
-  final void Function(Meal meal) onToggleFavorite;
+  // final void Function(Meal meal) onToggleFavorite;
 
   // 当选择一个食物项时调用的方法
   void selectMeal(BuildContext context, Meal meal) {
@@ -31,10 +31,11 @@ class MealsScreen extends StatelessWidget {
       MaterialPageRoute(
         builder: (ctx) => MealDetailsScreen(
           meal: meal, // 传递选中的食物
-          onToggleFavorite: (isFavorite) {
-            // 将详情页的收藏回调转发到本页面的回调
-            onToggleFavorite(meal);
-          },
+          // 现在不需要再重写 onToggleFavorite 了， 使用 favoriteMealsProvider 的值
+          // onToggleFavorite: (isFavorite) {
+          //   // 将详情页的收藏回调转发到本页面的回调
+          //   onToggleFavorite(meal);
+          // },
         ),
       ),
     );
