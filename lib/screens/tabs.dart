@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart'; // 导入 Riverpod 库
 
-import 'package:meals/data/dummy_data.dart'; // 导入示例数据
 import 'package:meals/models/meal.dart'; // 导入食物模型
 import 'package:meals/screens/categories.dart'; // 导入分类页面
 import 'package:meals/screens/filters.dart'; // 导入过滤器页面
 import 'package:meals/screens/meals.dart'; // 导入食物列表页面
 import 'package:meals/widgets/main_drawer.dart'; // 导入主抽屉菜单组件
+import 'package:meals/providers/meals_provider.dart'; // 导入 mealsProvider
 
 // 定义初始过滤器设置，所有过滤器默认为关闭状态
 const kInitialFilters = {
@@ -16,18 +17,19 @@ const kInitialFilters = {
 };
 
 // TabsScreen是应用的主页面，包含底部导航栏，用于切换不同的主要页面
-class TabsScreen extends StatefulWidget {
+// 使用 ConsumerStatefulWidget 来管理状态
+class TabsScreen extends ConsumerStatefulWidget {
   const TabsScreen({super.key});
 
   @override
-  State<TabsScreen> createState() {
-    // 创建并返回状态类的实例
-    return _TabsScreenState();
-  }
+  ConsumerState<TabsScreen> createState() => _TabsScreenState();
+
+  // 获取 mealsProvider 的值
+  // List<Meal> get meals => ref.watch(mealsProvider);
 }
 
 // TabsScreen的状态类，管理底部导航栏、收藏夹和过滤器
-class _TabsScreenState extends State<TabsScreen> {
+class _TabsScreenState extends ConsumerState<TabsScreen> {
   // 当前选中的页面索引，0表示分类页面，1表示收藏页面
   int _selectedPageIndex = 0;
 
@@ -97,8 +99,11 @@ class _TabsScreenState extends State<TabsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // 获取 mealsProvider 的值
+    final meals = ref.watch(mealsProvider);
+
     // 根据当前过滤器设置筛选可用的食物
-    final availableMeals = dummyMeals.where((meal) {
+    final availableMeals = meals.where((meal) {
       // 如果无麸质过滤器开启且食物含麸质，则排除
       if (_selectedFilters[Filter.glutenFree]! && !meal.isGlutenFree) {
         return false;

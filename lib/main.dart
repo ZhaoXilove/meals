@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:meals/screens/tabs.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final theme = ThemeData(
   useMaterial3: true,
@@ -12,7 +13,9 @@ final theme = ThemeData(
 );
 
 void main() {
-  runApp(const App());
+  // 使用 ProviderScope 包裹 App，以便在应用中使用状态管理，不然会导致状态管理失效
+  // 也可以只包裹在 主页面 中，这样状态管理只会在主页面中生效
+  runApp(const ProviderScope(child: App()));
 }
 
 class App extends StatelessWidget {
