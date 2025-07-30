@@ -289,6 +289,159 @@
     onTap: () => onSelect(context, meal)
     ```
 
+## Flutter Riverpod 状态管理
+
+### Riverpod 基础概念
+
+- **Provider**: 提供状态的容器
+  - 不可变的数据源，只读
+  - 示例：
+    ```dart
+    // 定义一个简单的 Provider
+    final mealsProvider = Provider<List<Meal>>((ref) {
+      return dummyMeals;  // 返回静态数据
+    });
+    ```
+
+- **StateNotifier**: 可变状态的管理器
+  - 封装状态修改逻辑
+  - 确保状态修改的可控性和可预测性
+  - 示例：
+    ```dart
+    // 定义一个 StateNotifier 类
+    class FavoriteMealsNotifier extends StateNotifier<List<Meal>> {
+      // 构造函数，初始化空列表
+      FavoriteMealsNotifier() : super([]);
+      
+      // 状态修改方法
+      bool toggleMealFavoriteStatus(Meal meal) {
+        final mealIsFavorite = state.contains(meal);
+        if (mealIsFavorite) {
+          // 移除收藏
+          state = state.where((m) => m.id != meal.id).toList();
+          return false;
+        } else {
+          // 添加收藏
+          state = [...state, meal];
+          return true;
+        }
+      }
+    }
+    ```
+
+- **StateNotifierProvider**: 将 StateNotifier 暴露给 UI
+  - 连接 StateNotifier 和 UI
+  - 提供状态和修改状态的方法
+  - 示例：
+    ```dart
+    // 定义一个 StateNotifierProvider
+    final favoriteMealsProvider = 
+        StateNotifierProvider<FavoriteMealsNotifier, List<Meal>>(
+          (ref) => FavoriteMealsNotifier(),
+        );
+    ```
+
+### Riverpod 组件
+
+- **ConsumerWidget**: 替代 StatelessWidget，可以访问 Provider
+  - 通过 WidgetRef 参数访问 Provider
+  - 示例：
+    ```dart
+    class MealDetailsScreen extends ConsumerWidget {
+      @override
+      Widget build(BuildContext context, WidgetRef ref) {
+        // 使用 ref 访问 Provider
+        final wasAdded = ref
+            .read(favoriteMealsProvider.notifier)
+            .toggleMealFavoriteStatus(meal);
+        // ...
+      }
+    }
+    ```
+
+- **ConsumerStatefulWidget** 和 **ConsumerState**: 替代 StatefulWidget 和 State
+  - 在有状态组件中访问 Provider
+  - 示例：
+    ```dart
+    class TabsScreen extends ConsumerStatefulWidget {
+      @override
+      ConsumerState<TabsScreen> createState() => _TabsScreenState();
+    }
+    
+    class _TabsScreenState extends ConsumerState<TabsScreen> {
+      @override
+      Widget build(BuildContext context) {
+        // 使用 ref 访问 Provider
+        final meals = ref.watch(mealsProvider);
+        // ...
+      }
+    }
+    ```
+
+### 访问 Provider 数据
+
+- **ref.watch()**: 监听 Provider 的变化并在变化时重建 UI
+  - 用于需要实时反映状态变化的场景
+  - 示例：
+    ```dart
+    // 监听 Provider 的值
+    final meals = ref.watch(mealsProvider);
+    final activeFilters = ref.watch(filtersProvider);
+    ```
+
+- **ref.read()**: 一次性读取 Provider 的值，不监听变化
+  - 用于事件处理程序中，如按钮点击
+  - 示例：
+    ```dart
+    // 读取 Provider 的值并调用方法
+    final wasAdded = ref
+        .read(favoriteMealsProvider.notifier)
+        .toggleMealFavoriteStatus(meal);
+    ```
+
+- **ref.listen()**: 监听 Provider 的变化并执行回调，不重建 UI
+  - 用于执行副作用，如显示通知
+  - 示例：
+    ```dart
+    // 监听 Provider 的变化
+    ref.listen(someProvider, (previous, next) {
+      if (previous != next) {
+        // 执行副作用
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('状态已更新')),
+        );
+      }
+    });
+    ```
+
+### 状态修改最佳实践
+
+- **不可变状态**: 始终创建新的状态对象，而不是修改现有对象
+  - 错误示例：`state[filter] = isActive;` (直接修改)
+  - 正确示例：`state = {...state, filter: isActive};` (创建新对象)
+
+- **状态封装**: 将状态修改逻辑封装在 StateNotifier 中
+  - 示例：
+    ```dart
+    // 在 StateNotifier 中封装状态修改逻辑
+    void setFilter(Filter filter, bool isActive) {
+      state = {...state, filter: isActive};
+    }
+    ```
+
+- **Provider 组合**: 使用 ref 在一个 Provider 中访问另一个 Provider
+  - 示例：
+    ```dart
+    // 过滤可用的食物
+    final availableMeals = meals.where((meal) {
+      if (activeFilters[Filter.glutenFree]! && !meal.isGlutenFree) {
+        return false;
+      }
+      // 更多过滤逻辑...
+      return true;
+    }).toList();
+    ```
+
 ## 最佳实践
 
 - 使用主题系统保持 UI 一致性
@@ -301,3 +454,4 @@
 - **models/**: 数据模型
 - **widgets/**: UI 组件
 - **screens/**: 应用页面
+- **providers/**: 状态管理提供者

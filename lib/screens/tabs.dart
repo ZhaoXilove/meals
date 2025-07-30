@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart'; // 导入 Riverpod 库
 
-import 'package:meals/models/meal.dart'; // 导入食物模型
+// 导入食物模型
 import 'package:meals/screens/categories.dart'; // 导入分类页面
 import 'package:meals/screens/filters.dart'; // 导入过滤器页面
 import 'package:meals/screens/meals.dart'; // 导入食物列表页面
 import 'package:meals/widgets/main_drawer.dart'; // 导入主抽屉菜单组件
 import 'package:meals/providers/meals_provider.dart'; // 导入 mealsProvider
 import 'package:meals/providers/favorite_provider.dart'; // 导入 favoriteMealsProvider 和 FavoriteMealsNotifier
+import 'package:meals/providers/filters_provider.dart'; // 导入 filtersProvider
 
 // 定义初始过滤器设置，所有过滤器默认为关闭状态
 const kInitialFilters = {
@@ -38,7 +39,8 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
   // final List<Meal> _favoriteMeals = [];
 
   // 当前选中的过滤器设置，初始使用kInitialFilters
-  Map<Filter, bool> _selectedFilters = kInitialFilters;
+  // 现在不需要它了， 使用filtersProvider的值，因为filtersProvider是全局状态，会自动更新
+  // Map<Filter, bool> _selectedFilters = kInitialFilters;
 
   //  显示信息提示的方法，使用SnackBar
   // void _showInfoMessage(String message) {
@@ -80,23 +82,17 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
   }
 
   // 设置屏幕的方法，处理抽屉菜单的导航
-  void _setScreen(String identifier) async {
+  void _setScreen(String identifier) {
     // 关闭抽屉菜单
     Navigator.of(context).pop();
 
     // 如果选择了过滤器选项
     if (identifier == 'filters') {
-      // 导航到过滤器页面，并等待返回结果
-      final result = await Navigator.of(context).push<Map<Filter, bool>>(
-        MaterialPageRoute(
-          builder: (ctx) => FiltersScreen(currentFilters: _selectedFilters),
-        ),
+      // 导航到过滤器页面，不需要等待返回结果
+      Navigator.of(context).push(
+        // 使用 MaterialPageRoute 导航到过滤器页面
+        MaterialPageRoute(builder: (ctx) => const FiltersScreen()),
       );
-
-      // 更新过滤器设置，如果result为null则使用初始设置
-      setState(() {
-        _selectedFilters = result ?? kInitialFilters;
-      });
     }
   }
 
@@ -104,23 +100,25 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
   Widget build(BuildContext context) {
     // 获取 mealsProvider 的值
     final meals = ref.watch(mealsProvider);
+    // 获取 filtersProvider 的值
+    final activeFilters = ref.watch(filtersProvider);
 
     // 根据当前过滤器设置筛选可用的食物
     final availableMeals = meals.where((meal) {
       // 如果无麸质过滤器开启且食物含麸质，则排除
-      if (_selectedFilters[Filter.glutenFree]! && !meal.isGlutenFree) {
+      if (activeFilters[Filter.glutenFree]! && !meal.isGlutenFree) {
         return false;
       }
       // 如果无乳糖过滤器开启且食物含乳糖，则排除
-      if (_selectedFilters[Filter.lactoseFree]! && !meal.isLactoseFree) {
+      if (activeFilters[Filter.lactoseFree]! && !meal.isLactoseFree) {
         return false;
       }
       // 如果素食过滤器开启且食物不是素食，则排除
-      if (_selectedFilters[Filter.vegetarian]! && !meal.isVegetarian) {
+      if (activeFilters[Filter.vegetarian]! && !meal.isVegetarian) {
         return false;
       }
       // 如果纯素食过滤器开启且食物不是纯素食，则排除
-      if (_selectedFilters[Filter.vegan]! && !meal.isVegan) {
+      if (activeFilters[Filter.vegan]! && !meal.isVegan) {
         return false;
       }
       // 通过所有过滤器检查，保留该食物
@@ -142,6 +140,7 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
 
       // 如果选中的是收藏页面 ， 使用 MealsScreen 组件
       activePage = MealsScreen(
+        // 使用 MealsScreen 组件
         // 不使用之前的 _favoriteMeals ， 使用 favoriteMealsProvider 的值
         meals: favoriteMeals, // 传递收藏的食物列表
         // 现在不需要再重写 onToggleFavorite 了， 使用 favoriteMealsProvider 的值

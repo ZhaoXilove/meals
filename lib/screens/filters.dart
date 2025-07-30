@@ -1,29 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart'; // 导入 Riverpod 库
+import 'package:meals/providers/filters_provider.dart'; // 导入 filtersProvider
 
 // 以下是被注释掉的导入，可能在开发过程中暂时不需要
 // import 'package:meals/screens/tabs.dart';
 // import 'package:meals/widgets/main_drawer.dart';
 
-// 定义过滤器枚举类型，包含四种饮食限制选项
-enum Filter { glutenFree, lactoseFree, vegetarian, vegan }
-
 // FiltersScreen 是一个有状态组件，用于管理和设置食物过滤器
-class FiltersScreen extends StatefulWidget {
+class FiltersScreen extends ConsumerStatefulWidget {
   // 构造函数，接收当前过滤器设置
-  const FiltersScreen({super.key, required this.currentFilters});
+  // 现在不需要currentFilters参数了，使用filtersProvider的值
+  // required this.currentFilters
+  const FiltersScreen({super.key});
 
   // 当前过滤器设置，使用Map存储每个过滤器的开启状态
-  final Map<Filter, bool> currentFilters;
+  //  final Map<Filter, bool> currentFilters;
 
   @override
-  State<FiltersScreen> createState() {
+  ConsumerState<FiltersScreen> createState() {
     // 创建并返回状态类的实例
     return _FiltersScreenState();
   }
 }
 
 // FiltersScreen的状态类，管理过滤器的UI和状态
-class _FiltersScreenState extends State<FiltersScreen> {
+class _FiltersScreenState extends ConsumerState<FiltersScreen> {
   // 无麸质过滤器的状态（麸质是小麦中的一种蛋白质，某些人对其过敏）
   var _glutenFreeFilterSet = false;
 
@@ -40,12 +41,18 @@ class _FiltersScreenState extends State<FiltersScreen> {
   void initState() {
     // 调用父类的initState方法
     super.initState();
-
+    // 从filtersProvider中获取过滤器状态
+    final activeFilters = ref.read(filtersProvider);
+    // 更新各个过滤器的状态
+    _glutenFreeFilterSet = activeFilters[Filter.glutenFree]!;
+    _lactoseFreeFilterSet = activeFilters[Filter.lactoseFree]!;
+    _vegetarianFilterSet = activeFilters[Filter.vegetarian]!;
+    _veganFilterSet = activeFilters[Filter.vegan]!;
     // 从widget属性中初始化各个过滤器的状态
-    _glutenFreeFilterSet = widget.currentFilters[Filter.glutenFree]!;
-    _lactoseFreeFilterSet = widget.currentFilters[Filter.lactoseFree]!;
-    _vegetarianFilterSet = widget.currentFilters[Filter.vegetarian]!;
-    _veganFilterSet = widget.currentFilters[Filter.vegan]!;
+    // _glutenFreeFilterSet = widget.currentFilters[Filter.glutenFree]!;
+    // _lactoseFreeFilterSet = widget.currentFilters[Filter.lactoseFree]!;
+    // _vegetarianFilterSet = widget.currentFilters[Filter.vegetarian]!;
+    // _veganFilterSet = widget.currentFilters[Filter.vegan]!;
   }
 
   @override
@@ -74,13 +81,15 @@ class _FiltersScreenState extends State<FiltersScreen> {
         onPopInvoked: (didPop) {
           // 如果系统没有处理返回操作（didPop为false）
           if (!didPop) {
-            // 手动处理导航返回，并传递当前过滤器设置
-            Navigator.of(context).pop({
+            // 更新filtersProvider中的过滤器状态
+            ref.read(filtersProvider.notifier).setFilters({
               Filter.glutenFree: _glutenFreeFilterSet,
               Filter.lactoseFree: _lactoseFreeFilterSet,
               Filter.vegetarian: _vegetarianFilterSet,
               Filter.vegan: _veganFilterSet,
             });
+            // 手动处理导航返回，不需要传递数据，因为已经通过provider更新了
+            Navigator.of(context).pop();
           }
         },
         // 页面主体内容
