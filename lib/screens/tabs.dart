@@ -6,7 +6,7 @@ import 'package:meals/screens/categories.dart'; // 导入分类页面
 import 'package:meals/screens/filters.dart'; // 导入过滤器页面
 import 'package:meals/screens/meals.dart'; // 导入食物列表页面
 import 'package:meals/widgets/main_drawer.dart'; // 导入主抽屉菜单组件
-import 'package:meals/providers/meals_provider.dart'; // 导入 mealsProvider
+// import 'package:meals/providers/meals_provider.dart'; // 导入 mealsProvider
 import 'package:meals/providers/favorite_provider.dart'; // 导入 favoriteMealsProvider 和 FavoriteMealsNotifier
 import 'package:meals/providers/filters_provider.dart'; // 导入 filtersProvider
 
@@ -99,31 +99,33 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
   @override
   Widget build(BuildContext context) {
     // 获取 mealsProvider 的值
-    final meals = ref.watch(mealsProvider);
+    // final meals = ref.watch(mealsProvider);
     // 获取 filtersProvider 的值
-    final activeFilters = ref.watch(filtersProvider);
+    // final activeFilters = ref.watch(filtersProvider);
+    // 获取 filteredMealsProvider 的值
+    final availableMeals = ref.watch(filteredMealsProvider);
 
     // 根据当前过滤器设置筛选可用的食物
-    final availableMeals = meals.where((meal) {
-      // 如果无麸质过滤器开启且食物含麸质，则排除
-      if (activeFilters[Filter.glutenFree]! && !meal.isGlutenFree) {
-        return false;
-      }
-      // 如果无乳糖过滤器开启且食物含乳糖，则排除
-      if (activeFilters[Filter.lactoseFree]! && !meal.isLactoseFree) {
-        return false;
-      }
-      // 如果素食过滤器开启且食物不是素食，则排除
-      if (activeFilters[Filter.vegetarian]! && !meal.isVegetarian) {
-        return false;
-      }
-      // 如果纯素食过滤器开启且食物不是纯素食，则排除
-      if (activeFilters[Filter.vegan]! && !meal.isVegan) {
-        return false;
-      }
-      // 通过所有过滤器检查，保留该食物
-      return true;
-    }).toList();
+    // final availableMeals = meals.where((meal) {
+    //   // 如果无麸质过滤器开启且食物含麸质，则排除
+    //   if (activeFilters[Filter.glutenFree]! && !meal.isGlutenFree) {
+    //     return false;
+    //   }
+    //   // 如果无乳糖过滤器开启且食物含乳糖，则排除
+    //   if (activeFilters[Filter.lactoseFree]! && !meal.isLactoseFree) {
+    //     return false;
+    //   }
+    //   // 如果素食过滤器开启且食物不是素食，则排除
+    //   if (activeFilters[Filter.vegetarian]! && !meal.isVegetarian) {
+    //     return false;
+    //   }
+    //   // 如果纯素食过滤器开启且食物不是纯素食，则排除
+    //   if (activeFilters[Filter.vegan]! && !meal.isVegan) {
+    //     return false;
+    //   }
+    //   // 通过所有过滤器检查，保留该食物
+    //   return true;
+    // }).toList();
 
     // 根据当前选中的页面索引决定显示哪个页面
     Widget activePage = CategoriesScreen(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:meals/models/meal.dart'; // 导入食物模型
 import 'package:flutter_riverpod/flutter_riverpod.dart'; // 导入 Riverpod 库
 import 'package:meals/providers/favorite_provider.dart'; // 导入 favoriteMealsProvider 和 FavoriteMealsNotifier
+import 'package:meals/providers/filters_provider.dart'; // 导入 filteredMealsProvider
 
 // MealDetailsScreen是一个无状态组件，用于显示食物的详细信息
 // 使用 ConsumerWidget 来管理状态 替代 StatelessWidget
@@ -34,6 +35,11 @@ class MealDetailsScreen extends ConsumerWidget {
     // 获取 favoriteMealsProvider 的值, 这里使用read不使用watch是 因为 这里不需要监听 收藏列表的变化，只是触发收藏状态的改变
     // final favoriteMeals = ref.read(favoriteMealsProvider);
 
+    // 监听 favoriteMealsProvider 的值
+    final favoriteMeals = ref.watch(favoriteMealsProvider);
+    // 判断 meal 是否在 favoriteMeals 中
+    final isFavorite = favoriteMeals.contains(meal);
+
     // 返回一个脚手架，包含标题栏和主体内容
     return Scaffold(
       appBar: AppBar(
@@ -55,7 +61,9 @@ class MealDetailsScreen extends ConsumerWidget {
                 wasAdded ? '食物已添加至收藏夹.' : '食物已从收藏夹中移除.',
               );
             },
-            icon: const Icon(Icons.star), // 使用星形图标表示收藏
+            icon: Icon(
+              isFavorite ? Icons.star : Icons.star_border,
+            ), // 使用星形图标表示收藏
           ),
         ],
       ),
