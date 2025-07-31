@@ -105,8 +105,26 @@ class _CategoriesScreenState extends State<CategoriesScreen>
             ),
         ],
       ),
-      builder: (context, child) => Padding(
+      /**
+       * Padding(
         padding: EdgeInsets.only(top: 100 - _animationController.value * 100),
+        child: child,
+      ),
+       * 
+       */
+      builder: (context, child) => SlideTransition(
+        // 当动画控制器为0时，位置为(0, -1)，当动画控制器为1时，位置为(0, 0)
+        position:
+            // Tween是动画的插值器，用于计算动画的值
+            Tween(begin: const Offset(0, 0.3), end: const Offset(0, 0)).animate(
+              //  CurvedAnimation 是动画的插值器，用于计算动画的值
+              CurvedAnimation(
+                //parent 是动画的控制器
+                parent: _animationController,
+                //curve 是动画的曲线
+                curve: Curves.easeInOut,
+              ),
+            ),
         child: child,
       ),
     );
