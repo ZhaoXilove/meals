@@ -90,11 +90,15 @@ class MealDetailsScreen extends ConsumerWidget {
         child: Column(
           children: [
             // 显示食物的图片
-            Image.network(
-              meal.imageUrl, // 图片URL
-              width: double.infinity, // 宽度占满屏幕
-              height: 300, // 高度固定为300
-              fit: BoxFit.cover, // 图片填充方式为覆盖
+            // 使用Hero 来实现动画效果 ， 在两个页面之间共享动画 ， 并且使用很方便
+            Hero(
+              tag: meal.id,
+              child: Image.network(
+                meal.imageUrl, // 图片URL
+                width: double.infinity, // 宽度占满屏幕
+                height: 300, // 高度固定为300
+                fit: BoxFit.cover, // 图片填充方式为覆盖
+              ),
             ),
             const SizedBox(height: 14), // 间隔
             // 显示"配料"标题

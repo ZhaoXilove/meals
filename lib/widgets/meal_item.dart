@@ -31,13 +31,17 @@ class MealItem extends StatelessWidget {
         onTap: () => onSelect(context, meal),
         child: Stack(
           children: [
-            FadeInImage(
-              placeholder: MemoryImage(kTransparentImage),
-              image: NetworkImage(meal.imageUrl),
-              // cover以确保图片完整显示
-              fit: BoxFit.cover,
-              width: double.infinity,
-              height: 200,
+            // Hero 是用于在两个页面之间共享动画的组件，并且使用很方便
+            Hero(
+              tag: meal.id,
+              child: FadeInImage(
+                placeholder: MemoryImage(kTransparentImage),
+                image: NetworkImage(meal.imageUrl),
+                // cover以确保图片完整显示
+                fit: BoxFit.cover,
+                width: double.infinity,
+                height: 200,
+              ),
             ),
             Positioned(
               bottom: 0,
