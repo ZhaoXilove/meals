@@ -61,9 +61,27 @@ class MealDetailsScreen extends ConsumerWidget {
                 wasAdded ? '食物已添加至收藏夹.' : '食物已从收藏夹中移除.',
               );
             },
-            icon: Icon(
-              isFavorite ? Icons.star : Icons.star_border,
-            ), // 使用星形图标表示收藏
+            // 隐式动画 使用AnimatedSwitcher 来实现动画效果
+            icon: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              transitionBuilder: (child, animation) =>
+                  // 缩放动画
+                  // ScaleTransition(scale: animation, child: child),
+                  // 旋转动画
+                  RotationTransition(
+                    // Tween是动画的插值器，用于计算动画的值, 用于做补间动画 ，这里用于做旋转动画
+                    turns: Tween<double>(
+                      begin: 0.7,
+                      end: 1.0,
+                    ).animate(animation),
+                    child: child,
+                  ),
+              // 需要设置Key，不然隐式动画无法触发，因为动画是根据Key来判断的
+              child: Icon(
+                isFavorite ? Icons.star : Icons.star_border,
+                key: ValueKey(isFavorite),
+              ), // 使用星形图标表示收藏
+            ),
           ),
         ],
       ),
